@@ -1,8 +1,12 @@
-
+//禁止页面滚动，避免取值错误
+ $(document.body).css({
+   "overflow-x":"hidden",
+   "overflow-y":"hidden"
+ });
 //定义全局参数
 var canvas;
 var context;
-var isWhite = true;
+var isWhite = true;//先手白棋
 var chessData = new Array(15);//创建数组记录落子位置
 for (x = 4; x <= 18; x++) {
     chessData[x] = new Array(15);
@@ -22,10 +26,10 @@ function drawRect() {
     context.fillStyle = '#15aafb'//画布填充颜色
     context.fillRect(0, 0, 1024, 768)//绘制画布
 
-    //     //标题
-    //     context.fillStyle = "#e4393a";
-    //     context.font = "40px Arial";
-    //     context.strokeText('五子棋',350,50);
+        //标题
+        context.fillStyle = "#e4393a";
+        context.font = "40px Arial";
+        context.strokeText('傻淮五子棋',350,50);
 
     //     //再来一局
 
@@ -47,11 +51,7 @@ function drawRect() {
         context.closePath();
         context.stroke();
     }
-
-
-
 }
-
 //点击事件
 function play(e) {
     var color;
@@ -97,18 +97,20 @@ function isWin(color, x, y) {
     }
     chessData[x][y] = temp;
     lrCount(temp, x, y);//判断左右方向是否胜利
-    tbCount(temp, x, y);
+    tbCount(temp, x, y);//判断上下方向是否胜利
+    lt_rbCount(temp,x,y);//判断左上右下方向是否胜利
+    rt_lbCount(temp,x,y);//判断右上左下方向是否胜利
 }
-function lrCount(temp, x, y) {
+function lrCount(temp, x, y) {//左右判定
     var count = 0;//连线总数
-    for (var i = x; i >= 4; i--) {
+    for (var i = x; i >= 4; i--) {//左判定
         if (chessData[i][y] == temp) {
             ++count;
         } else {
             i = -1;
         }
     }
-    for (var i = x; i <= 18; i++) {
+    for (var i = x; i <= 18; i++) {//右判定
         if (chessData[i][y] == temp) {
             ++count
         } else {
@@ -117,16 +119,16 @@ function lrCount(temp, x, y) {
     }
     success(temp, --count);
 }
-function tbCount(temp, x, y) {
+function tbCount(temp, x, y) {//上下判定
     var count = 0;
-    for (var i = y; i >= 2; i--) {
+    for (var i = y; i >= 2; i--) {//上判定
         if (chessData[x][i] == temp) {
             ++count;
         } else {
             i = -1
         }
     }
-    for (var i = y; i <= 16; i++) {
+    for (var i = y; i <= 16; i++) {//下判定
         if (chessData[x][i] == temp) {
             ++count;
         } else {
@@ -135,17 +137,59 @@ function tbCount(temp, x, y) {
     }
     success(temp, --count);
 }
+function lt_rbCount(temp,x,y){//左上，右下判定
+    var count = 0;
+    for(var i = x,k = y;i >= 4,k >= 2;i--,k--){//左上判定
+        if(chessData[i][k] == temp){
+            ++count;
+        } else {
+            i = -1;
+            k = -1;
+        }
+    }
+    for(var i = x,k = y;i <= 18,k <= 16;i++,k++){//右下判定
+        
+        if(chessData[i][k] == temp){
+            ++count;
+        } else {
+            i = 100;
+            k = 100;
+        }
+    }
+    success(temp,--count);
+}
+function rt_lbCount(temp,x,y){//右上，左下判定
+    var count = 0;
+    for(var i = x,k = y;i >= 4,k <= 16;i--,k++){//左下判定
+        if(chessData[i][k] == temp){
+            ++count;
+        } else {
+            i = -1;
+            k = 100;
+        }
+    }
+    for(var i = x,k = y;i <= 18,k >= 2;i++,k--){//右上判定
+         if(chessData[i][k] == temp){
+            ++count;
+        } else {
+            i = 100;
+            k = -1;
+        }
+    }
+    success(temp,--count);
+}
 function success(temp, count) {
 
     if (count == 5) {
         if (temp == 1) {
             alert('白棋赢啦');
+            window.restart();
         } else if (temp == 2) {
             alert('黑棋赢啦');
+            window.restart();
         }
 
     } else {
         console.log('no winer');
-
     }
 }
