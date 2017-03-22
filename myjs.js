@@ -259,7 +259,44 @@ function aiCheck() {
     }
     chess(color, x, y);
 }
-
+function model(count, death) {
+    var level_one = 0;//单子
+    var level_two = 1;//眠2.眠1
+    var level_three = 1500;//眠3.眠2
+    var level_four = 4000;//冲4，活3
+    var level_five = 10000;//活4
+    var level_six = 100000;//成5
+    if (count == 1 && death == 1) {
+        return level_one;
+    } else if (count == 2) {
+        if (death == 0) {
+            return level_three;
+        } else if (death == 1) {
+            return level_two;
+        } else {
+            return level_one;
+        }
+    } else if (count == 3) {
+        if (death == 0) {
+            return level_one;
+        } else if (death == 1) {
+            return level_three;
+        } else {
+            return level_one;
+        }
+    } else if (count == 4) {
+        if (death == 0) {
+            return level_five;
+        } else if (death == 1) {
+            return level_four;
+        } else {
+            return level_one;
+        }
+    } else if (count == 5) {
+        return level_six;
+    }
+    return level_one;
+}
 function aiLR(x, y, num) {
     var death = 0;//死路
     var live = 0;//被堵住
@@ -278,9 +315,97 @@ function aiLR(x, y, num) {
         } else if (arr[i][y] == 0) {
             live += 1;
             i = -1;
-        }else{
+        } else {
             death += 1;
             i = -1;
         }
     }
+    for (var i = x; i <= 18; i++) {
+        if (arr[i][y] == num) {
+            count++;
+        } else if (arr[i][y] == 0) {
+            live += 1;
+            i = 100;
+        } else {
+            death += 1;
+            i = 100;
+        }
+    }
+    count -= 1;
+    return modal(count, death);
+}
+function aiTB(x, y, num) {
+    var death = 0;//死路
+    var live = 0;//被堵住
+    var count = 0;//没子
+    var arr = new Array(15);
+    for (var i = 4; i <= 18; i++) {
+        arr[i] = new Array(15);
+        for (var j = 2; j <= 16; j++) {
+            arr[i][j] = chessData[i][j];
+        }
+    }
+    arr[x][y] = num;
+    for (var i = y; i >= 2; i--) {
+        if (arr[x][i] == num) {
+            count++;
+        } else if (arr[x][i] == 0) {
+            live += 1;
+            i = -1;
+        } else {
+            death += 1;
+            i = -1;
+        }
+    }
+    for (var i = y; i <= 16; i++) {
+        if (arr[x][i] == num) {
+            count++;
+        } else if (arr[x][i] == 0) {
+            live += 1;
+            i = 100;
+        } else {
+            death += 1;
+            i = 100;
+        }
+    }
+    count -= 1;
+    return modal(count, death);
+}
+
+function aiRT(x, y, num) {
+    var death = 0;//死路
+    var live = 0;//被堵住
+    var count = 0;//没子
+    var arr = new Array(15);
+    for (var i = 4; i <= 18; i++) {
+        arr[i] = new Array(15);
+        for (var j = 2; j <= 16; j++) {
+            arr[i][j] = chessData[i][j];
+        }
+    }
+    arr[x][y] = num;
+    for (var i = x,j=y; i >= 4,j>=2; i--) {
+        if (arr[x][i] == num) {
+            count++;
+        } else if (arr[x][i] == 0) {
+            live += 1;
+            i = -1;
+        } else {
+            death += 1;
+            i = -1;
+        }
+    }
+    for (var i = y; i <= 16; i++) {
+        if (arr[x][i] == num) {
+            count++;
+        } else if (arr[x][i] == 0) {
+            live += 1;
+            i = 100;
+        } else {
+            death += 1;
+            i = 100;
+        }
+    }
+    count -= 1;
+    return modal(count, death);
 }
