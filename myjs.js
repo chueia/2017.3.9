@@ -25,12 +25,7 @@ function drawRect() {
     canvas = document.getElementById("canvas");//获取canvasID
     context = canvas.getContext("2d");//规定画布维度
     context.fillStyle = '#15aafb'//画布填充颜色
-
-
-
-
     context.fillRect(0, 0, 1024, 768)//绘制画布
-
     //标题
     context.fillStyle = "#e4393a";
     context.font = "40px Arial";
@@ -81,7 +76,7 @@ function play(e) {
         chessData[x][y] = 2;
 
     }
-
+    aiPlay(color)
 
 }
 //绘制棋子
@@ -92,6 +87,7 @@ function chess(color, x, y) {
     context.closePath;
     context.fill();
     isWin(color, x, y);
+    console.log(color, x, y)
 }
 //判断是否胜利
 function isWin(color, x, y) {
@@ -144,7 +140,7 @@ function tbCount(temp, x, y) {//上下判定
 }
 function lt_rbCount(temp, x, y) {//左上，右下判定
     var count = 0;
-    for (var i = x, k = y; i >= 4, k >= 2; i-- , k--) {//左上判定
+    for (var i = x, k = y; i >= 4 && k >= 2; i-- , k--) {//左上判定
         if (chessData[i][k] == temp) {
             ++count;
         } else {
@@ -152,7 +148,7 @@ function lt_rbCount(temp, x, y) {//左上，右下判定
             k = -1;
         }
     }
-    for (var i = x, k = y; i <= 18, k <= 16; i++ , k++) {//右下判定
+    for (var i = x, k = y; i <= 18 && k <= 16; i++ , k++) {//右下判定
 
         if (chessData[i][k] == temp) {
             ++count;
@@ -165,7 +161,7 @@ function lt_rbCount(temp, x, y) {//左上，右下判定
 }
 function rt_lbCount(temp, x, y) {//右上，左下判定
     var count = 0;
-    for (var i = x, k = y; i >= 4, k <= 16; i-- , k++) {//左下判定
+    for (var i = x, k = y; i >= 4 && k <= 16; i-- , k++) {//左下判定
         if (chessData[i][k] == temp) {
             ++count;
         } else {
@@ -173,7 +169,7 @@ function rt_lbCount(temp, x, y) {//右上，左下判定
             k = 100;
         }
     }
-    for (var i = x, k = y; i <= 18, k >= 2; i++ , k--) {//右上判定
+    for (var i = x, k = y; i <= 18 && k >= 2; i++ , k--) {//右上判定
         if (chessData[i][k] == temp) {
             ++count;
         } else {
@@ -214,13 +210,14 @@ function clearChess() {
 // })
 //五子棋AI
 function getScore() {//获取分数
-    var i = new Arraw(2);
+    var i = new Array(2);
     var score = 0;
     for (var x = 4; x <= 18; x++) {
         for (var y = 2; y <= 16; y++) {
-            if (chessData == 0) {//如果当前位置没棋子再判断分数
+            if (chessData[x][y] == 0) {//如果当前位置没棋子再判断分数
                 if (judge(x, y) > score) {
                     score = judge(x, y);
+                    console.log(x + y + "位置的分数是" + score)
                     i[0] = x;
                     i[1] = y;
                 }
@@ -228,6 +225,7 @@ function getScore() {//获取分数
         }
     }
     return i;
+    console.log("ai认为应该在" + i + "落子")
 }
 
 function judge(x, y) {//AI算分
@@ -243,20 +241,32 @@ function judge(x, y) {//AI算分
     return result;
 }
 
-function aiPlay() {//AI下棋
-    var str = getPosition();
-    aiCheck(str[0], str[1]);//AI检查
+function aiPlay(color) {//AI下棋
+    if (color == "black") {
+        color == "white";
+        var str = getScore();
+        console.log("str的值是" + str)
+        aiCheck(color,str[0], str[1]);//AI检查
+        
+    }else{
+        color == "black";
+        var str = getScore();
+        console.log("str的值是" + str)
+        aiCheck(color,str[0], str[1]);//AI检查
+        
+    }
+
 }
 
-function aiCheck() {
-    if (winner != '' && winner != null) {
-        return;
-    }
-    if (isWhite) {
-        color = "white";
-    } else {
-        color = "black"
-    }
+function aiCheck(color,x, y) {
+    // if (winner != '' && winner != null) {
+    //     return;
+    // }
+    // if (isWhite) {
+    //     color = "white";
+    // } else {
+    //     color = "black"
+    // }
     chess(color, x, y);
 }
 function model(count, death) {
@@ -332,7 +342,7 @@ function aiLR(x, y, num) {
         }
     }
     count -= 1;
-    return modal(count, death);
+    return model(count, death);
 }
 function aiTB(x, y, num) {
     var death = 0;//死路
@@ -369,7 +379,7 @@ function aiTB(x, y, num) {
         }
     }
     count -= 1;
-    return modal(count, death);
+    return model(count, death);
 }
 
 function aiRT(x, y, num) {
@@ -384,28 +394,74 @@ function aiRT(x, y, num) {
         }
     }
     arr[x][y] = num;
-    for (var i = x,j=y; i >= 4,j>=2; i--) {
-        if (arr[x][i] == num) {
+    for (var i = x, j = y; i >= 4 && j >= 2; i-- , j--) {
+        if (arr[i][j] == num) {
             count++;
-        } else if (arr[x][i] == 0) {
+        } else if (arr[i][j] == 0) {
             live += 1;
             i = -1;
+            j = -1;
         } else {
             death += 1;
             i = -1;
+            j = -1;
         }
     }
-    for (var i = y; i <= 16; i++) {
-        if (arr[x][i] == num) {
+    for (var i = x, j = y; i <= 18 && j <= 16; i++ , j++) {
+        if (arr[i][j] == num) {
             count++;
-        } else if (arr[x][i] == 0) {
+        } else if (arr[i][j] == 0) {
             live += 1;
             i = 100;
+            j = 100;
         } else {
             death += 1;
             i = 100;
+            j = 100;
         }
     }
     count -= 1;
-    return modal(count, death);
+    return model(count, death);
+}
+
+function aiLB(x, y, num) {
+    var death = 0;
+    var live = 0;
+    var count = 0;
+    var arr = new Array(15);
+    for (var i = 4; i <= 18; i++) {
+        arr[i] = new Array(15);
+        for (var j = 2; j <= 16; j++) {
+            arr[i][j] = chessData[i][j];
+        }
+    }
+    arr[x][y] = num;
+    for (var i = x, j = y; i >= 4 && j <= 16; i-- , j++) {
+        if (arr[i][j] == num) {
+            count++;
+        } else if (arr[i][j] == 0) {
+            live += 1;
+            i = -1;
+            j = 100;
+        } else {
+            death += 1;
+            i = -1;
+            j = 100;
+        }
+    }
+    for (var i = x, j = y; i <= 18 && j >= 2; i++ , j--) {
+        if (arr[i][j] == num) {
+            count++;
+        } else if (arr[i][j] == 0) {
+            live += 1;
+            i = 100;
+            j = -1;
+        } else {
+            death += 1;
+            i = 100;
+            j = -1;
+        }
+    }
+    count -= -1;
+    return model(count, death);
 }
