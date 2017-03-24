@@ -62,11 +62,11 @@ function play(e) {
     var y = parseInt(py / 40);
     if (x < 4 || y < 2 || x > 18 || y > 16 || chessData[x][y] != 0) { //xy在棋盘中且没有点过
         return;
-    } 
-        color = "white";
-        chess(color, x, y);
-        isWhite = false;
-        chessData[x][y] = 1;
+    }
+    color = "white";
+    chess(color, x, y);
+    isWhite = false;
+    chessData[x][y] = 1;
 
     // } else {
     //     color = "white";
@@ -86,11 +86,11 @@ function chess(color, x, y) {
     context.closePath;
     context.fill();
     isWin(color, x, y);
-    
+
 }
 //判断是否胜利
 function isWin(color, x, y) {
-    
+
     var temp = 2;
     if (color == "white") {
         temp = 1;
@@ -183,10 +183,10 @@ function success(temp, count) {//判断是否胜利
     if (count == 5) {
         if (temp == 1) {
             layer.open({
-                type:1,
-                skin:'layui-layer-rim',
-                area:['600px','430px'],
-                content:'<p>你竟然打败了傻淮！真是不得了啊！</p><img src="timg.jpg"></img>'
+                type: 1,
+                skin: 'layui-layer-rim',
+                area: ['600px', '430px'],
+                content: '<p>你竟然打败了傻淮！真是不得了啊！</p><img src="timg.jpg"></img>'
             });
             window.restart();
             clearChess();
@@ -197,7 +197,7 @@ function success(temp, count) {//判断是否胜利
         }
 
     } else {
-        
+
     }
 }
 function clearChess() {
@@ -228,9 +228,9 @@ function getScore() {//获取分数
             }
         }
     }
-     console.log("ai认为应该在" + i + "落子");
+    console.log("ai认为应该在" + i + "落子");
     return i;
-   
+
 }
 
 function judge(x, y) {//AI算分
@@ -243,7 +243,7 @@ function judge(x, y) {//AI算分
         parseInt(aiRT(x, y, 2)) +
         parseInt(aiLB(x, y, 2));
     var result = a + b;
-    console.log(x+','+y+'的分数是'+result)
+    console.log(x + ',' + y + '的分数是' + result)
     return result;
 }
 
@@ -391,7 +391,7 @@ function aiRT(x, y, num) {
         }
     }
     arr[x][y] = num;
-    for (var i = x, j = y; i >= 4 && j >= 2; ) {
+    for (var i = x, j = y; i >= 4 && j >= 2;) {
         if (arr[i][j] == num) {
             count++;
         } else if (arr[i][j] == 0) {
@@ -403,10 +403,10 @@ function aiRT(x, y, num) {
             i = -1;
             j = -1;
         }
-        i-- ;
+        i--;
         j--;
     }
-    for (var i = x, j = y; i <= 18 && j <= 16; ) {
+    for (var i = x, j = y; i <= 18 && j <= 16;) {
         if (arr[i][j] == num) {
             count++;
         } else if (arr[i][j] == 0) {
@@ -419,7 +419,7 @@ function aiRT(x, y, num) {
             j = 100;
         }
         i++;
-		j++;
+        j++;
     }
     count -= 1;
     return model(count, death);
@@ -437,7 +437,7 @@ function aiLB(x, y, num) {
         }
     }
     arr[x][y] = num;
-    for (var i = x, j = y; i >= 4 && j <= 16; ) {
+    for (var i = x, j = y; i >= 4 && j <= 16;) {
         if (arr[i][j] == num) {
             count++;
         } else if (arr[i][j] == 0) {
@@ -452,7 +452,7 @@ function aiLB(x, y, num) {
         i--;
         j++;
     }
-    for (var i = x, j = y; i <= 18 && j >= 2; ) {
+    for (var i = x, j = y; i <= 18 && j >= 2;) {
         if (arr[i][j] == num) {
             count++;
         } else if (arr[i][j] == 0) {
