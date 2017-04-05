@@ -229,7 +229,7 @@ function getScore() {//获取分数
         }
     }
     console.log("ai认为应该在" + i + "落子");
-    return i;
+    return i; 
 
 }
 
